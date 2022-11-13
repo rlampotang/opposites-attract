@@ -19,7 +19,7 @@ const db = getDatabase();
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-const port = 5500;
+const port = parseInt(process.env.PORT, 10) || 5500;
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
@@ -67,6 +67,27 @@ app.post("/user/survey", async (req, res) => {
         prog: Object.keys(surveyData).length,
         survey: surveyData,
     });
+
+    // Loop through all other users and compare survey data
+    const usersRef = await db.ref("users").get();
+    const users = usersRef.val();
+    const matches = [];
+    for (const [otherUid, otherUser] of Object.entries(users)) {
+        if (otherUid === uid) continue;
+        const otherSurvey = otherUser.surveyProgress?.survey ?? {};
+        const match = {};
+        for (const [key, value] of Object.entries(surveyData)) {
+            if (otherSurvey[key] === value) {
+                match[key] = value;
+            }
+        }
+        if (Object.keys(match).length > 0) {
+            matches.push({
+                uid: otherUid,
+                match,
+            });
+        }
+    }
 
     res.send({
         state: "success"

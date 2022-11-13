@@ -1,7 +1,7 @@
 export const __DEV__ = process.env.NODE_ENV === 'development';
 const pageUrl = __DEV__
     ? 'http://localhost:5500'
-    : window.location.protocol + '//' + window.location.host;
+    : 'https://opposites.herokuapp.com:5500/';
 
 const processResponse = async (response) => {
     let returnData = {};
