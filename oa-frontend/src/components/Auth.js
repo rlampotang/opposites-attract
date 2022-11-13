@@ -3,10 +3,12 @@ import React, {
     useCallback,
     useContext,
     useEffect,
+    useRef,
     useState,
 } from 'react';
 import { internal_apiGet, internal_apiPost } from '../utils/network';
 import LoginPopup from './LoginPopup';
+import { useNavigate } from 'react-router-dom';
 
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
@@ -26,21 +28,38 @@ export const AuthContext = createContext({});
 
 export default function Auth(props) {
     const { children } = props;
+    const navigate = useNavigate();
 
     const [user, setUser] = useState(null);
+    const [token, setToken] = useState("");
     useEffect(() => {
         const unregisterAuthObserver = firebase.auth().onAuthStateChanged(user => {
             setUser(user);
-            if (user) setLoginPopupOpen(false);
+            if (user) {
+                setLoginPopupOpen((old) => {
+                    if (old) navigate('/dashboard');
+                    return false;
+                });
+            }
+            else {
+                setToken("");
+            }
         });
-        return () => unregisterAuthObserver();
+        return () => {
+            unregisterAuthObserver();
+        }
     }, []);
 
     const logOut = useCallback(() => {
         firebase.auth().signOut();
+        navigate("/");
     }, []);
 
-    const token = user ? user.uid : "";
+    useEffect(() => {
+        if (user && !token) {
+            firebase.auth().currentUser.getIdToken(true).then(setToken);
+        }
+    }, [user, token]);
     const apiGet = async (path, options = {}, currentToken = token) => {
         const response = await internal_apiGet(path, currentToken, options);
         return response;
@@ -65,7 +84,7 @@ export default function Auth(props) {
                 apiGet,
                 apiPost,
                 openLoginPopup,
-                loggedIn: Boolean(user),
+                loggedIn: Boolean(user && token),
                 logOut,
                 user,
                 firebase,

@@ -1,8 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router';
+import { useAuth } from './Auth';
+import Button from './Buttons';
 
 export default function Title() {
     const [moved, setMoved] = useState(false);
     const [showTitle, setShowTitle] = useState(false);
+    const { loggedIn, openLoginPopup } = useAuth();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (moved && !showTitle) {
@@ -22,6 +27,9 @@ export default function Title() {
             <h2 className={`mt-32 transition-all ${!showTitle && "opacity-0"}`}>
                 Matching the wrong people together for profit
             </h2>
+            {loggedIn ? <Button className='mt-8' onClick={() => navigate("/survey")}>do the survey</Button> : <Button className='mt-8' onClick={() => openLoginPopup(true)}>
+                join the revolution
+            </Button>}
         </div>
     )
 }

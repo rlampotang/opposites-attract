@@ -1,12 +1,15 @@
 import React, { Fragment, useRef } from 'react'
 import { SwitchTransition, CSSTransition } from 'react-transition-group';
-import { Link, Outlet, useLocation, useOutlet, useRoutes } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate, useOutlet, useRoutes } from 'react-router-dom';
 import { useAuth } from './Auth';
 import Footer from './Footer';
 
-function Item({ children, className = "", onClick }) {
+function Item({ children, onClick, path, className = "" }) {
+    const { pathname } = useLocation();
+    const isActive = pathname === `/${path}`;
+
     return (
-        <div className={`rounded-b-md overflow-hidden px-4 h-full text-2xl transition-all duration-300 flex justify-center items-center hover:cursor-pointer hover:bg-gray-200 hover:shadow-sm ${className}`} onClick={onClick}>
+        <div className={`rounded-b-md overflow-hidden px-4 h-full text-2xl transition-all duration-300 flex justify-center items-center ${isActive ? "bg-blue-500 font-bold text-white" : "hover:cursor-pointer hover:bg-gray-200 hover:shadow-sm"} ${className}`} onClick={onClick}>
             {children}
         </div>
     );
@@ -17,30 +20,40 @@ export default function Header() {
     const location = useLocation();
     const currentOutlet = useOutlet();
 
+    const { user } = useAuth();
+
     const contentRef = useRef(null);
     return (
         <>
-            <div className="fixed w-full h-12 flex">
+            <div className="fixed w-full h-[3.5rem] flex bg-white shadow-sm">
                 <Link to="/">
-                    <Item className='rounded-bl-none'>
-                        <span>Home</span>
+                    <Item className='rounded-bl-none' path="">
+                        <span>home</span>
+                    </Item>
+                </Link>
+                <Link to="/dashboard">
+                    <Item path="dashboard">
+                        <span>dashboard</span>
                     </Item>
                 </Link>
                 <Link to="/about">
-                    <Item>
-                        <span>About</span>
+                    <Item path="about">
+                        <span>about</span>
                     </Item>
                 </Link>
-                {!loggedIn
+                {!loggedIn || !user
                     ? <Item className='ml-auto rounded-br-none'
                         onClick={openLoginPopup}>
-                        <span>Log In</span>
+                        <span>log in</span>
                     </Item>
-                    : <Item className='ml-auto rounded-br-none' onClick={logOut}>
-                        <span>Log Out</span>
-                    </Item>}
+                    : <>
+                        <img className='m-2 rounded-full overflow-hidden shadow-md ml-auto' referrerPolicy="no-referrer" src={user.photoURL} />
+                        <Item className='rounded-br-none' onClick={logOut}>
+                            <span>log out</span>
+                        </Item>
+                    </>}
             </div>
-            <div className='h-12' />
+            <div className="h-[3.5rem]"></div>
             <SwitchTransition mode="out-in">
                 <CSSTransition
                     key={location.pathname}

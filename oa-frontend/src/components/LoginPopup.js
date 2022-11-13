@@ -1,4 +1,4 @@
-import Button from './Button';
+import Button from './Buttons';
 import clsx from 'clsx';
 import React, { useEffect, useMemo, useState } from 'react';
 import ReactModal from 'react-modal';
@@ -8,11 +8,11 @@ import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import { useAuth } from './Auth';
 
 const messages = [
-    "I don't use Google (seriously?)",
-    "I'm not old",
-    "I don't actively bring down the human race",
-    "I have touched grass",
-    "I don't have an email"
+    "i don't use google (seriously?)",
+    "i'm not old",
+    "i don't actively bring down the human race",
+    "i have touched grass",
+    "i don't have an email"
 ]
 
 const firebaseUiConfig = {
@@ -69,7 +69,7 @@ export default function LoginPopup({
                     <GrClose />
                 </button>
             )}
-            <h2 className="text-4xl">Log In</h2>
+            <h2 className="text-4xl">log in</h2>
             {!loading && <>
                 <StyledFirebaseAuth uiConfig={
                     {
@@ -90,10 +90,10 @@ export default function LoginPopup({
                 ) : <p>for fucks sake just log in</p>}
             </>}
             <p className='mt-4'>
-                By signing up, you agree to our <a>privacy policy</a>.
+                by signing up, you agree to our <a>privacy policy</a>
             </p>
-            <p>Or don't.</p>
-            <p>Be like that.</p>
+            <p>or don't</p>
+            <p>be like that</p>
         </ReactModal>
     );
 }

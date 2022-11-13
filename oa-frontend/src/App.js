@@ -1,8 +1,9 @@
 import Auth from "./components/Auth";
-import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Title from "./components/Title";
 import { Routes, Route, Outlet, Link } from "react-router-dom";
+import Dashboard from "./pages/Dashboard";
+import Survey from "./pages/Survey";
 
 function App() {
 
@@ -12,6 +13,8 @@ function App() {
         <Route path="/" element={<Header />}>
           <Route index element={<Title />} />
           <Route path="about" element={null} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="survey" element={<Survey />} />
         </Route>
       </Routes>
     </Auth>
