@@ -1,8 +1,20 @@
+import Auth from "./components/Auth";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import Title from "./components/Title";
+import { Routes, Route, Outlet, Link } from "react-router-dom";
+
 function App() {
+
   return (
-    <div className='flex w-screen min-h-screen bg-black text-white'>
-      Hi
-    </div>
+    <Auth>
+      <Routes>
+        <Route path="/" element={<Header />}>
+          <Route index element={<Title />} />
+          <Route path="about" element={null} />
+        </Route>
+      </Routes>
+    </Auth>
   );
 }
 
