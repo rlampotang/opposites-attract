@@ -9,7 +9,7 @@ function Item({ children, onClick, path, className = "" }) {
     const isActive = pathname === `/${path}`;
 
     return (
-        <div className={`rounded-b-md overflow-hidden px-4 h-full text-2xl transition-all duration-300 flex justify-center items-center ${isActive ? "bg-blue-500 font-bold text-white" : "hover:cursor-pointer hover:bg-gray-200 hover:shadow-sm"} ${className}`} onClick={onClick}>
+        <div className={`rounded-b-md overflow-hidden px-4 h-full text-2xl transition-all duration-300 font-bold flex justify-center items-center ${isActive ? "bg-blue-500 font-bold text-white" : "hover:cursor-pointer hover:bg-red-500 hover:text-white hover:shadow-sm"} ${className}`} onClick={onClick}>
             {children}
         </div>
     );
@@ -25,7 +25,7 @@ export default function Header() {
     const contentRef = useRef(null);
     return (
         <>
-            <div className="fixed w-full h-[3.5rem] flex bg-white shadow-sm">
+            <div className="fixed w-full h-[3.5rem] flex bg-white shadow-sm z-10">
                 <Link to="/">
                     <Item className='rounded-bl-none' path="">
                         <span>home</span>

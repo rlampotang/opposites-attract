@@ -11,7 +11,7 @@ export default function Button({
     return (
         <button
             className={clsx(
-                'transition-all py-2 px-3 rounded-full text-white text-lg font-bold',
+                'transition-all py-2 px-3 rounded-full text-white text-lg font-bold shadow-md',
                 {
                     'bg-red-500 hover:bg-red-200 hover:text-black': isRed,
                     'bg-blue-500 hover:bg-blue-200 hover:text-black': !isRed,

@@ -42,9 +42,59 @@ app.use("*", async (req, res, next) => {
         });
 });
 
-app.get("/user/dashboard", (req, res) => {
+app.get("/user/dashboard", async (req, res) => {
+    const uid = req.uid;
+    const ref = await db.ref(`users/${uid}/surveyProgress`).get();
+    const surveyProgress = ref.val();
+    const surveyData = surveyProgress?.survey;
+    if (!surveyProgress || !surveyData) {
+        return res.send({
+            matches: null
+        });
+    }
+
+    const usersRef = await db.ref("users").get();
+    const users = usersRef.val();
+    const matches = [];
+    for (const [otherUid, otherUser] of Object.entries(users)) {
+        if (otherUid === uid) continue;
+        const otherSurvey = otherUser.surveyProgress?.survey ?? {};
+        const match = {};
+        for (const [key, value] of Object.entries(surveyData)) {
+            if (otherSurvey[key] === value) {
+                match[key] = value;
+            }
+        }
+        matches.push({
+            uid: otherUid,
+            score: Object.keys(match).length,
+        });
+    }
+    matches.sort((a, b) => b.score - a.score);
+
     res.send({
-        matches: null
+        matches: matches.slice(0, 3),
+    });
+});
+
+app.get("/person*", async (req, res) => {
+    const { uid } = req.query;
+    const ref = await db.ref(`users/${uid}`).get();
+    const user = ref.val();
+
+    //Get user info from authentification
+    const auth = getAuth();
+    const {
+        displayName,
+        email,
+        photoURL,
+    } = await auth.getUser(uid);
+
+    res.send({
+        ...user,
+        displayName,
+        email,
+        photoURL,
     });
 });
 
@@ -67,27 +117,6 @@ app.post("/user/survey", async (req, res) => {
         prog: Object.keys(surveyData).length,
         survey: surveyData,
     });
-
-    // Loop through all other users and compare survey data
-    const usersRef = await db.ref("users").get();
-    const users = usersRef.val();
-    const matches = [];
-    for (const [otherUid, otherUser] of Object.entries(users)) {
-        if (otherUid === uid) continue;
-        const otherSurvey = otherUser.surveyProgress?.survey ?? {};
-        const match = {};
-        for (const [key, value] of Object.entries(surveyData)) {
-            if (otherSurvey[key] === value) {
-                match[key] = value;
-            }
-        }
-        if (Object.keys(match).length > 0) {
-            matches.push({
-                uid: otherUid,
-                match,
-            });
-        }
-    }
 
     res.send({
         state: "success"

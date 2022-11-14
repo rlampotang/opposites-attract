@@ -1,6 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import { FaFire, FaPizzaSlice, FaThermometer } from "react-icons/fa";
+import { GiMilkCarton, GiSeaCreature } from "react-icons/gi";
+import { TbFriendsOff } from "react-icons/tb";
+import { MdPets } from "react-icons/md";
+import { SlPeople } from "react-icons/sl";
 
 import { useAuth } from '../components/Auth';
 import clsx from 'clsx';
@@ -27,7 +31,54 @@ const surveyInfo = [
             "cold"
         ],
         key: 'temp'
+    },
+    {
+        icon: MdPets,
+        title: "cats or dogs?",
+        subtitle: "oldie but goodie",
+        options: [
+            "meow",
+            "a long nosed thing"
+        ],
+        key: 'pets'
+    },
+    {
+        icon: SlPeople,
+        title: "introvert or extrover?",
+        subtitle: "meyer's briggs told me i should go into entertainment, hbu?",
+        options: [
+            "ew people",
+            "people"
+        ]
+    },
+    {
+        icon: GiSeaCreature,
+        title: "loch-ness monster?",
+        subtitle: "is nessie just a friend in my imagination?",
+        options: [
+            "yes i love nessie too",
+            "you are crazy"
+        ]
+    },
+    {
+        icon: GiMilkCarton,
+        title: "milk",
+        subtitle: "drink milk?",
+        options: [
+            "it's creamy goodness",
+            "who wants utter juice"
+        ]
+    },
+    {
+        icon: TbFriendsOff,
+        title: "exes",
+        subtitle: "could you be friends?",
+        options: [
+            "yes",
+            "no"
+        ]
     }
+
 ];
 
 const timeToString = (seconds) => {
@@ -46,7 +97,7 @@ export default function Survey() {
         const { status, survey, prog } = await apiGet("/user/surveyProgress");
         if (status == 200) {
             setSurveyData(survey);
-            setSurveyProg(prog);
+            setSurveyProg(0);
         }
     }
 
@@ -77,7 +128,7 @@ export default function Survey() {
         else if (surveyProg > -1) {
             const timeout = setTimeout(() => {
                 setShowTimer(true);
-                setTimer(1000);
+                setTimer(16);
             }, 500);
             return () => clearTimeout(timeout);
         }
@@ -109,6 +160,7 @@ export default function Survey() {
             <h1 className='text-2xl font-bold'>{surveyInfo[surveyProg].title}</h1>
             <p className='text-md'>{surveyInfo[surveyProg].subtitle}</p>
             {(surveyInfo[surveyProg].options || []).map((option, i) => {
+                const selected = surveyData[dataKey] !== undefined && surveyData[dataKey] === i;
                 const color = i % 2 ? 'bg-blue-500' : 'bg-red-500';
                 const outline = i % 2 ? 'border-blue-500' : 'border-red-500';
                 return <button key={i} className={clsx('flex items-center text-center mb-2',
@@ -125,47 +177,50 @@ export default function Survey() {
                     <div className={
                         clsx('flex rounded-full bg-gray-200 border-2 h-8 w-8 mr-2',
                             {
-                                [outline]: surveyData[dataKey] === i,
+                                [outline]: selected,
                             }
                         )
                     }
                     >
-                        {surveyData[dataKey] === i && <div className={`rounded-full ${color} h-4 w-4 m-auto`} />}
+                        {selected && <div className={`rounded-full ${color} h-4 w-4 m-auto`} />}
                     </div>
                     {option}
                 </button>
             })
             }
 
-            <div className='flex justify-between w-full h-6'>
-                {surveyProg > 0 ? <button onClick={
+            <div className='mt-4 flex justify-between w-full'>
+                {surveyProg > 0 ? <Button onClick={
                     () => setSurveyProg((prev) => prev - 1)
-                }>
+                } isRed>
                     Back
-                </button>
+                </Button>
                     : <div />}
-                {dataKey in surveyData && <button
+                {dataKey in surveyData && <Button
                     onClick={
                         () => setSurveyProg((prev) => prev + 1)
                     }
                 >
                     Next
-                </button>}
+                </Button>}
             </div>
         </>
     }
     else if (surveyProg === surveyInfo.length) {
         content = <>
             <FaFire size={36} className="mb-2" />
-            <h1 className='text-2xl font-bold'>You're all done!</h1>
-            <p className='text-md'>Thanks for taking the time to fill out the survey.</p>
+            <h1 className='text-2xl font-bold'>all done!</h1>
+            <p className='text-md'>kinda mid takes ngl</p>
             {
                 sending ? <div>
                     <p className='text-md'>Sending your data...</p>
                 </div>
                     : <div className='mt-4 flex flex-col items-center w-full justify-between'>
                         <Button onClick={() => navigate("/dashboard")}>view your matches</Button>
-                        <Button isRed onClick={() => setSurveyProg(0)} className="mt-3">take it again</Button>
+                        <Button isRed onClick={() => {
+                            setSurveyProg(0);
+                            setSurveyData({});
+                        }} className="mt-3">take it again</Button>
                     </div>
             }
         </>

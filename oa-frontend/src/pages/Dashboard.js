@@ -25,13 +25,9 @@ function ActionItems() {
     return <div className='flex'>
         <Box onClick={() => navigate("/survey")}>
             <h2 className='text-3xl font-bold'>take<br></br> the<br></br>survey</h2>
-            <div className='ml-4 flex w-32 h-32 bg-white shadow-sm rounded-full'></div>
-        </Box>
-        <Box>
-            <h2 className='text-3xl font-bold'>edit<br></br> your<br></br>profile</h2>
-            <svg height="100" width="120" className='ml-4'>
-                <polygon points="60,0 0,100 120,100" style={{ fill: "white" }} />
-            </svg>
+            <div className='ml-4 flex w-32 h-32 bg-white shadow-sm rounded-full overflow-hidden'>
+                <img src='https://media-exp1.licdn.com/dms/image/C5603AQHUT6-SEh7lwA/profile-displayphoto-shrink_400_400/0/1645397695492?e=1674086400&v=beta&t=2vyjtpWfYT4TeY5Lge3DErszaqdnZlKCT7xa8yVZZH8' referrerPolicy="noreferrer" className='grayscale opacity-20' />
+            </div>
         </Box>
     </div>
 }
