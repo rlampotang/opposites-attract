@@ -37,7 +37,7 @@ function Person({ match, ind }) {
             </Button>
         </>
     }
-    return <div className='pt-16 flex flex-col w-64 max-h-[32rem] mr-6 bg-white rounded-xl text-center items-center align-middle relative overflow-hidden'>
+    return <div className='pt-16 flex flex-col w-64 max-h-[32rem] md:mr-6 bg-white rounded-xl text-center items-center align-middle relative overflow-hidden mb-8 md:mb-0'>
         {content}
     </div>
 
@@ -47,11 +47,11 @@ export default function Matches({ matches }) {
     const active = (matches !== null && matches.length);
     const { user } = useAuth();
 
-    return <div className='flex w-full min-h-[10rem] flex-col relative overflow-hidden rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-md'>
+    return <div className='flex w-full flex-col min-h-[10rem] relative overflow-hidden rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-md'>
         {active &&
             <>
                 <h2 className='mt-8 ml-10 font-bold text-white text-3xl'>tada! your matches</h2>
-                <div className='flex p-6'>
+                <div className='flex p-6 flex-col items-center md:items-start md:flex-row '>
                     {
                         matches.map((match, i) => {
                             return <Person match={match} key={i} ind={i} />
